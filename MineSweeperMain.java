@@ -13,11 +13,17 @@ public class MineSweeperMain extends JFrame {
    private static final long serialVersionUID = 1L;  // to prevent serial warning
 
    // private variables
+   private String playerName;
+
+   // components
    GameBoardPanel board = new GameBoardPanel();
    JButton btnNewGame = new JButton("New Game");
 
+
    // Constructor to set up all the UI and game components
-   public MineSweeperMain() {
+   public MineSweeperMain(String playerName) {
+      this.playerName = playerName;
+      
       Container cp = this.getContentPane();           // JFrame's content-pane
       cp.setLayout(new BorderLayout()); // in 10x10 GridLayout
 
@@ -37,7 +43,7 @@ public class MineSweeperMain extends JFrame {
 
       pack();  // Pack the UI components, instead of setSize()
       setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);  // handle window-close button
-      setTitle("Mineswepper");
+      setTitle("Minesweeper");
       setVisible(true);   // show it
    }
 
