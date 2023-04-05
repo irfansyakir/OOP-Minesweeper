@@ -1,3 +1,4 @@
+package minesweeper;
 import java.awt.*;        // Use AWT's Layout Manager
 import java.awt.event.*;
 import javax.swing.*;     // Use Swing's Containers and Components
@@ -42,7 +43,10 @@ public class MineSweeperMain extends JFrame {
 
    // The entry main() method
    public static void main(String[] args) {
-      // [TODO 1] Check Swing program template on how to run the constructor
-      // .........
+      SwingUtilities.invokeLater(new Runnable() {
+         public void run() {
+            new MineSweeperMain();  // Let the constructor do the job
+         }
+      });
    }
 }
