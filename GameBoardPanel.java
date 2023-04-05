@@ -7,8 +7,8 @@ public class GameBoardPanel extends JPanel {
    private static final long serialVersionUID = 1L;  // to prevent serial warning
 
    // Define named constants for the game properties
-   public static final int ROWS = 10;      // number of cells
-   public static final int COLS = 10;
+   public static final int ROWS = 16;      // number of cells
+   public static final int COLS = 30;
 
    // Define named constants for UI sizes
    public static final int CELL_SIZE = 60;  // Cell width and height, in pixels
@@ -19,11 +19,14 @@ public class GameBoardPanel extends JPanel {
    /** The game board composes of ROWSxCOLS cells */
    private Cell cells[][] = new Cell[ROWS][COLS];
    /** Number of mines */
-   private int numMines = 10;
+   private int numMines = 99;
 
    private CellMouseListener listener;
    private boolean gameStarted = false;
    private boolean gameOver = false;
+
+   private ImageIcon icon;
+
 
 
 
@@ -31,6 +34,8 @@ public class GameBoardPanel extends JPanel {
    /** Constructor */
    public GameBoardPanel() {
       super.setLayout(new GridLayout(ROWS, COLS, 2, 2));  // JPanel
+
+      icon = new ImageIcon("sus.png");
 
       // Allocate the 2D array of Cell, and added into content-pane.
       for (int row = 0; row < ROWS; ++row) {
@@ -126,10 +131,11 @@ public class GameBoardPanel extends JPanel {
    private void flagCell (int srcRow, int srcCol, boolean flag) {
       if (flag) {
          cells[srcRow][srcCol].isFlagged = true;
-         
+         cells[srcRow][srcCol].setIcon(icon);
          
       } else {
          cells[srcRow][srcCol].isFlagged = false;
+         cells[srcRow][srcCol].setIcon(null);
       }
 
       cells[srcRow][srcCol].paint();
