@@ -21,6 +21,8 @@ public class GameBoardPanel extends JPanel {
    /** Number of mines */
    int numMines = 10;
 
+   CellMouseListener listener;
+
    /** Constructor */
    public GameBoardPanel() {
       super.setLayout(new GridLayout(ROWS, COLS, 2, 2));  // JPanel
@@ -35,7 +37,7 @@ public class GameBoardPanel extends JPanel {
 
       // [TODO 3] Allocate a common listener as the MouseEvent listener for all the
       //  Cells (JButtons)
-      CellMouseListener listener = new CellMouseListener();
+      listener = new CellMouseListener();
       
 
       // [TODO 4] Every cell adds this common listener
@@ -63,8 +65,12 @@ public class GameBoardPanel extends JPanel {
          for (int col = 0; col < COLS; col++) {
             // Initialize each cell with/without mine
             cells[row][col].newGame(mineMap.isMined[row][col]);
+            cells[row][col].addMouseListener(listener);
+            
          }
       }
+
+      
    }
 
    // Return the number of mines [0, 8] in the 8 neighboring cells
@@ -86,16 +92,16 @@ public class GameBoardPanel extends JPanel {
    // If this cell has 0 mines, reveal the 8 neighboring cells recursively
    private void revealCell(int srcRow, int srcCol) {
       int numMines = getSurroundingMines(srcRow, srcCol);
-     cells[srcRow][srcCol].setText(numMines + "");
-     cells[srcRow][srcCol].isRevealed = true;
-     cells[srcRow][srcCol].paint();  // based on isRevealed
+      cells[srcRow][srcCol].setText(numMines + "");
+      cells[srcRow][srcCol].isRevealed = true;
+      cells[srcRow][srcCol].paint();  // based on isRevealed
       if (numMines == 0) {
-        // Recursively reveal the 8 neighboring cells
+         // Recursively reveal the 8 neighboring cells
          for (int row = srcRow - 1; row <= srcRow + 1; row++) {
             for (int col = srcCol - 1; col <= srcCol + 1; col++) {
-               // Need to ensure valid row and column numbers too
-               if (row >= 0 && row < ROWS && col >= 0 && col < COLS) {
-                  if (!cells[row][col].isRevealed) revealCell(row, col);
+            // Need to ensure valid row and column numbers too
+            if (row >= 0 && row < ROWS && col >= 0 && col < COLS) {
+               if (!cells[row][col].isRevealed) revealCell(row, col);
                }
             }
          }
@@ -105,6 +111,7 @@ public class GameBoardPanel extends JPanel {
    private void flagCell (int srcRow, int srcCol, boolean flag) {
       if (flag) {
          cells[srcRow][srcCol].isFlagged = true;
+         
          
       } else {
          cells[srcRow][srcCol].isFlagged = false;
@@ -116,12 +123,32 @@ public class GameBoardPanel extends JPanel {
 
    // Return true if the player has won (all cells have been revealed or were mined)
    public boolean hasWon() {
-      // ......
-      return true;
+      int cellsToWin = (ROWS * COLS) - numMines;
+      int cellCount = 0;
+      for (int row = 0; row < ROWS; ++row) {
+         for (int col = 0; col < COLS; ++col) {
+            if(cells[row][col].isRevealed) {
+               ++cellCount;
+            }
+         }
+      } 
+      System.out.println(cellCount);
+      return cellCount == cellsToWin;
+   
+   }
+
+   public void loss(){
+      for (int row = 0; row < ROWS; ++row) {
+         for (int col = 0; col < COLS; ++col) {
+            cells[row][col].removeMouseListener(listener);
+         }
+      } 
+      JOptionPane.showMessageDialog(null, "Game Over!");
    }
 
    // [TODO 2] Define a Listener Inner Class
    private class CellMouseListener extends MouseAdapter {
+      boolean won = false;
       @Override
       public void mouseClicked(MouseEvent e) {         // Get the source object that fired the Event
          Cell sourceCell = (Cell)e.getSource();
@@ -136,9 +163,12 @@ public class GameBoardPanel extends JPanel {
             // else reveal this cell
             if (sourceCell.isMined) {
                System.out.println("Loss");
-               JOptionPane.showMessageDialog(null, "Game Over!");
+               loss();
             } else {
               revealCell(sourceCell.row, sourceCell.col);
+              // System.out.println(sourceCell[sourceCell.row][sourceCell.col].isRevealed)
+              if (hasWon())
+               JOptionPane.showMessageDialog(null, "You won!");
             }
          } else if (e.getButton() == MouseEvent.BUTTON3) { // right-button clicked
             
@@ -156,8 +186,7 @@ public class GameBoardPanel extends JPanel {
             
          }
 
-         // [TODO 7] Check if the player has won, after revealing this cell
-         // ......
+         
       }
    }
 }

@@ -41,12 +41,5 @@ public class MineSweeperMain extends JFrame {
       setVisible(true);   // show it
    }
 
-   // The entry main() method
-   public static void main(String[] args) {
-      SwingUtilities.invokeLater(new Runnable() {
-         public void run() {
-            new MineSweeperMain();  // Let the constructor do the job
-         }
-      });
-   }
+   
 }
