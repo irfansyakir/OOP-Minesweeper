@@ -102,6 +102,18 @@ public class GameBoardPanel extends JPanel {
       }
    }
 
+   private void flagCell (int srcRow, int srcCol, boolean flag) {
+      if (flag) {
+         cells[srcRow][srcCol].isFlagged = true;
+         
+      } else {
+         cells[srcRow][srcCol].isFlagged = false;
+      }
+
+      cells[srcRow][srcCol].paint();
+
+   }
+
    // Return true if the player has won (all cells have been revealed or were mined)
    public boolean hasWon() {
       // ......
@@ -114,23 +126,34 @@ public class GameBoardPanel extends JPanel {
       public void mouseClicked(MouseEvent e) {         // Get the source object that fired the Event
          Cell sourceCell = (Cell)e.getSource();
          // For debugging
-         System.out.println("You clicked on (" + sourceCell.row + "," + sourceCell.col + ")");
+         
 
          // Left-click to reveal a cell; Right-click to plant/remove the flag.
          if (e.getButton() == MouseEvent.BUTTON1) {  // Left-button clicked
+            System.out.println("You clicked on (" + sourceCell.row + "," + sourceCell.col + ")");
             // [TODO 5] (later, after TODO 3 and 4
             // if you hit a mine, game over
             // else reveal this cell
             if (sourceCell.isMined) {
-               if
+               System.out.println("Loss");
+               JOptionPane.showMessageDialog(null, "Game Over!");
             } else {
-            //   revealCell(sourceCell.row, sourceCell.col);
-            //}
+              revealCell(sourceCell.row, sourceCell.col);
+            }
          } else if (e.getButton() == MouseEvent.BUTTON3) { // right-button clicked
-            // [TODO 6]
+            
             // If this cell is flagged, remove the flag
             // else plant a flag.
             // ......
+            // [TODO 6]
+            if (sourceCell.isFlagged) {
+               System.out.println("You unflagged(" + sourceCell.row + "," + sourceCell.col + ")");
+               flagCell(sourceCell.row, sourceCell.col, false);
+            } else {
+               System.out.println("You flagged(" + sourceCell.row + "," + sourceCell.col + ")");
+               flagCell(sourceCell.row, sourceCell.col, true);
+            }
+            
          }
 
          // [TODO 7] Check if the player has won, after revealing this cell

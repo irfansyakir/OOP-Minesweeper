@@ -50,5 +50,6 @@ public class Cell extends JButton {
    public void paint() {
       super.setForeground(isRevealed? FG_REVEALED: FG_NOT_REVEALED);
       super.setBackground(isRevealed? BG_REVEALED: BG_NOT_REVEALED);
+      
    }
 }
