@@ -36,15 +36,16 @@ public class GameBoardPanel extends JPanel {
       // [TODO 3] Allocate a common listener as the MouseEvent listener for all the
       //  Cells (JButtons)
       CellMouseListener listener = new CellMouseListener();
+      
 
       // [TODO 4] Every cell adds this common listener
-      /* 
-      for (int row ...) {
-         for (int col ...) {
-            cells[row][col].addMouseListener(listener);   // For all rows and cols
+       
+      for (int row = 0; row < ROWS; ++row) {
+         for (int col = 0; col < COLS; ++col) {
+            cells[row][col].addMouseListener(listener);
          }
       }
-      */
+      
 
       // Set the size of the content-pane and pack all the components
       //  under this container.
@@ -120,10 +121,9 @@ public class GameBoardPanel extends JPanel {
             // [TODO 5] (later, after TODO 3 and 4
             // if you hit a mine, game over
             // else reveal this cell
-            //if (sourceCell.isMined) {
-            //   System.out.println("Game Over");
-            //   sourceCell.setText("*");
-            //} else {
+            if (sourceCell.isMined) {
+               if
+            } else {
             //   revealCell(sourceCell.row, sourceCell.col);
             //}
          } else if (e.getButton() == MouseEvent.BUTTON3) { // right-button clicked
