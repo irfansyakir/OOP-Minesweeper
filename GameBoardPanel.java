@@ -7,35 +7,55 @@ public class GameBoardPanel extends JPanel {
    private static final long serialVersionUID = 1L;  // to prevent serial warning
 
    // Define named constants for the game properties
-   public static final int ROWS = 16;      // number of cells
-   public static final int COLS = 30;
+   public static String DIFICULTY;
+   public static int ROWS = 10;      // number of cells
+   public static int COLS = 10;
 
    // Define named constants for UI sizes
-   public static final int CELL_SIZE = 60;  // Cell width and height, in pixels
-   public static final int CANVAS_WIDTH  = CELL_SIZE * COLS; // Game board width/height
-   public static final int CANVAS_HEIGHT = CELL_SIZE * ROWS;
+   public static int CELL_SIZE = 60;  // Cell width and height, in pixels
+   public static int CANVAS_WIDTH;
+   public static int CANVAS_HEIGHT;
 
    // Define properties (package-visible)
    /** The game board composes of ROWSxCOLS cells */
-   private Cell cells[][] = new Cell[ROWS][COLS];
+   private Cell cells[][];
    /** Number of mines */
-   private int numMines = 99;
+   private int numMines = 0;
+   private int flags = 0;
 
    private CellMouseListener listener;
    private boolean gameStarted = false;
    private boolean gameOver = false;
 
-   private ImageIcon icon;
-
-
-
-
 
    /** Constructor */
-   public GameBoardPanel() {
+   public GameBoardPanel(String difficulty) {
+      GameBoardPanel.DIFICULTY = difficulty;
+
+      if (DIFICULTY.matches("EASY")) {
+         ROWS = 9;
+         COLS = 9;
+         numMines = 10;
+      } else if (DIFICULTY.matches("MEDIUM")) {
+         ROWS = 16;
+         COLS = 16;
+         numMines = 40;
+      } else if (DIFICULTY.matches("HARD")) {
+         ROWS = 16;
+         COLS = 20;
+         numMines = 64;
+      } else {
+         
+         System.out.println("Invalid difficulty");
+         System.exit(0);
+      }
+      cells = new Cell[ROWS][COLS];
+      CANVAS_WIDTH = CELL_SIZE * COLS;
+      CANVAS_HEIGHT = CELL_SIZE * ROWS;
+
       super.setLayout(new GridLayout(ROWS, COLS, 2, 2));  // JPanel
 
-      icon = new ImageIcon("sus.png");
+    
 
       // Allocate the 2D array of Cell, and added into content-pane.
       for (int row = 0; row < ROWS; ++row) {
@@ -50,14 +70,7 @@ public class GameBoardPanel extends JPanel {
       listener = new CellMouseListener();
       
 
-      // [TODO 4] Every cell adds this common listener
-       
-      for (int row = 0; row < ROWS; ++row) {
-         for (int col = 0; col < COLS; ++col) {
-            cells[row][col].addMouseListener(listener);
-         }
-      }
-      
+     
 
       // Set the size of the content-pane and pack all the components
       //  under this container.
@@ -68,27 +81,33 @@ public class GameBoardPanel extends JPanel {
    public void newGame() {
       gameStarted = false;
       gameOver = false;
+      flags = 0;
       // Reset cells, mines, and flags
       for (int row = 0; row < ROWS; row++) {
          for (int col = 0; col < COLS; col++) {
             // Initialize each cell without mine
             cells[row][col].newGame(false);
+
+            // removes the mouse listeners after new game is started only after first game is started
+            for (MouseListener ml : cells[row][col].getMouseListeners()) {
+               cells[row][col].removeMouseListener(ml);
+           }
+
             cells[row][col].addMouseListener(listener);     
          }
       }
    }
 
-   private void initialize() {
+   private void initialize(int currentRow, int currentCol) {
        // Get a new mine map
        MineMap mineMap = new MineMap();
-       mineMap.newMineMap(numMines, ROWS, COLS);
+       mineMap.newMineMap(numMines, ROWS, COLS, currentRow, currentCol);
 
        // Reset cells, mines, and flags
        for (int row = 0; row < ROWS; row++) {
          for (int col = 0; col < COLS; col++) {
-            // Initialize each cell without mine
-            cells[row][col].newGame(mineMap.isMined[row][col]);
-            cells[row][col].addMouseListener(listener);     
+            cells[row][col].startGame(mineMap.isMined[row][col]);
+               
          }
       }
    }
@@ -112,7 +131,8 @@ public class GameBoardPanel extends JPanel {
    // If this cell has 0 mines, reveal the 8 neighboring cells recursively
    private void revealCell(int srcRow, int srcCol) {
       int numMines = getSurroundingMines(srcRow, srcCol);
-      cells[srcRow][srcCol].setText(numMines + "");
+      if (numMines != 0) 
+         cells[srcRow][srcCol].setText(numMines + "");
       cells[srcRow][srcCol].isRevealed = true;
       cells[srcRow][srcCol].paint();  // based on isRevealed
       if (numMines == 0) {
@@ -121,24 +141,34 @@ public class GameBoardPanel extends JPanel {
             for (int col = srcCol - 1; col <= srcCol + 1; col++) {
             // Need to ensure valid row and column numbers too
             if (row >= 0 && row < ROWS && col >= 0 && col < COLS) {
-               if (!cells[row][col].isRevealed) revealCell(row, col);
+               if (!cells[row][col].isRevealed && !cells[row][col].isFlagged) revealCell(row, col);
                }
             }
          }
       }
    }
 
+   // flag or unflag cells if they are not revealed
    private void flagCell (int srcRow, int srcCol, boolean flag) {
       if (flag) {
-         cells[srcRow][srcCol].isFlagged = true;
-         cells[srcRow][srcCol].setIcon(icon);
-         
-      } else {
-         cells[srcRow][srcCol].isFlagged = false;
-         cells[srcRow][srcCol].setIcon(null);
-      }
 
-      cells[srcRow][srcCol].paint();
+         if (flags != numMines) {
+            // flag the selected cell
+            System.out.println("You flagged(" + srcRow + "," + srcCol + ")");
+            cells[srcRow][srcCol].isFlagged = true;
+            cells[srcRow][srcCol].sus();
+            flags++;
+         }
+        
+      } else {
+         // unflag the selected cell
+         System.out.println("You unflagged(" + srcRow + "," + srcCol + ")");
+         cells[srcRow][srcCol].isFlagged = false;
+         cells[srcRow][srcCol].unSus();
+         flags--;
+   
+   
+      }
 
    }
 
@@ -147,17 +177,18 @@ public class GameBoardPanel extends JPanel {
       if (gameOver) {
          return false;
      }
-      int cellsToWin = (ROWS * COLS) - numMines;
-      int cellCount = 0;
+      int unMinedCells = (ROWS * COLS) - numMines;
+      System.out.println("Cells that are not mined: " + unMinedCells);
+      int cellRevealedCount = 0;
       for (int row = 0; row < ROWS; ++row) {
          for (int col = 0; col < COLS; ++col) {
             if(cells[row][col].isRevealed) {
-               ++cellCount;
+               ++cellRevealedCount;
             }
          }
       } 
-      System.out.println(cellCount);
-      return cellCount == cellsToWin;
+      System.out.println(cellRevealedCount);
+      return cellRevealedCount == unMinedCells;
    
    }
 
@@ -165,6 +196,8 @@ public class GameBoardPanel extends JPanel {
       for (int row = 0; row < ROWS; ++row) {
           for (int col = 0; col < COLS; ++col) {
               cells[row][col].removeMouseListener(listener);
+              if (cells[row][col].isMined)
+               cells[row][col].imposter();
           }
       } 
   
@@ -179,51 +212,52 @@ public class GameBoardPanel extends JPanel {
    private class CellMouseListener extends MouseAdapter {
 
       @Override
-      public void mouseClicked(MouseEvent e) {         // Get the source object that fired the Event
+      public void mousePressed(MouseEvent e) {         // Get the source object that fired the Event
          Cell sourceCell = (Cell)e.getSource();
          // For debugging
          
-
          // Left-click to reveal a cell; Right-click to plant/remove the flag.
          if (e.getButton() == MouseEvent.BUTTON1) {  // Left-button clicked
 
-            if (gameStarted) {
-               System.out.println("You clicked on (" + sourceCell.row + "," + sourceCell.col + ")");
-               // [TODO 5] (later, after TODO 3 and 4
-               // if you hit a mine, game over
-               // else reveal this cell
-               if (sourceCell.isMined) {
-                  System.out.println("Loss");
-                  loss();
+            if (!sourceCell.isFlagged) {
+
+               if (gameStarted) {
+                  System.out.println("You clicked on (" + sourceCell.row + "," + sourceCell.col + ")");
+                  // [TODO 5] (later, after TODO 3 and 4
+                  // if you hit a mine, game over
+                  // else reveal this cell
+                  if (sourceCell.isMined) {
+                     System.out.println("Loss");
+                     loss();
+                  } else {
+                  revealCell(sourceCell.row, sourceCell.col);
+                  // System.out.println(sourceCell[sourceCell.row][sourceCell.col].isRevealed)
+                  if (hasWon())
+                     JOptionPane.showMessageDialog(null, "You won!");
+                  }
                } else {
-               revealCell(sourceCell.row, sourceCell.col);
-               // System.out.println(sourceCell[sourceCell.row][sourceCell.col].isRevealed)
-               if (hasWon())
-                  JOptionPane.showMessageDialog(null, "You won!");
+                  initialize(sourceCell.row, sourceCell.col);
+                  revealCell(sourceCell.row, sourceCell.col);
+                  gameStarted = true;
                }
-            } else {
-               initialize();
-               gameStarted = true;
+
             }
-
-
          } else if (e.getButton() == MouseEvent.BUTTON3) { // right-button clicked
             
             // If this cell is flagged, remove the flag
             // else plant a flag.
             // ......
             // [TODO 6]
-            if (sourceCell.isFlagged) {
-               System.out.println("You unflagged(" + sourceCell.row + "," + sourceCell.col + ")");
-               flagCell(sourceCell.row, sourceCell.col, false);
-            } else {
-               System.out.println("You flagged(" + sourceCell.row + "," + sourceCell.col + ")");
-               flagCell(sourceCell.row, sourceCell.col, true);
-            }
-            
+            if (!sourceCell.isRevealed) {
+               if (sourceCell.isFlagged) {
+                  
+                  flagCell(sourceCell.row, sourceCell.col, false);
+               } else {
+                  
+                  flagCell(sourceCell.row, sourceCell.col, true);
+               }
+            }    
          }
-
-         
       }
    }
 }

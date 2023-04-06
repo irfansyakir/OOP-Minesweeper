@@ -15,14 +15,25 @@ public class MineMap {
    }
 
    // Allow user to change the rows and cols
-   public void newMineMap(int numMines, int rows, int cols) {
+   public void newMineMap(int numMines, int rows, int cols, int currentRow, int currentCol) {
+      System.out.println("First cell: ("+ currentRow + "," + currentCol + ")");
       this.numMines = numMines;
-      Random rand = new Random();
-      for (int i = 0; i < numMines; i++) {
-         int randomRow = rand.nextInt(rows);
-         int randomCol = rand.nextInt(cols);
-         isMined[randomRow][randomCol] = true;
-         
+      int totalCells = rows * cols;
+      double probability = (double) numMines / totalCells;
+
+      for (int row = 0; row < rows; row++) {
+         for (int col = 0; col < cols; col++) {
+               if (row == currentRow && col == currentCol) {
+                  isMined[row][col] = false;
+               } else {
+                  if (Math.random() < probability) {
+                     isMined[row][col] = true;
+                     System.out.println("Mined cell: ("+ row + "," + col + ")");
+                  } else {
+                     isMined[row][col] = false;
+                  }
+               }
+         }
       }
       
    }
