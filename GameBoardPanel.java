@@ -1,10 +1,26 @@
+
 package minesweeper;
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
+import javax.swing.JFrame;
+import javax.sound.sampled.*;
+import java.awt.BorderLayout;
+import java.awt.Dimension;
+import java.io.*;
+import java.io.IOException;
+import javax.imageio.ImageIO;
+import javax.sound.sampled.Clip;
+import javax.swing.ImageIcon;
+import javax.swing.JDialog;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+
 
 public class GameBoardPanel extends JPanel {
    private static final long serialVersionUID = 1L;  // to prevent serial warning
+
+   
 
    // Define named constants for the game properties
    public static String DIFICULTY;
@@ -26,6 +42,8 @@ public class GameBoardPanel extends JPanel {
    private CellMouseListener listener;
    private boolean gameStarted = false;
    private boolean gameOver = false;
+
+   private Clip deathClip;
 
 
    /** Constructor */
@@ -69,6 +87,19 @@ public class GameBoardPanel extends JPanel {
       //  Cells (JButtons)
       listener = new CellMouseListener();
       
+      try {
+         // Main Menu Theme
+         File file = new File("/Users/irfansyakir/Documents/OOP-Minesweeper/assets/death.wav"); // change this to the "main_menu.wav" on windows
+         AudioInputStream death = AudioSystem.getAudioInputStream(file);
+         deathClip = AudioSystem.getClip();
+         deathClip.open(death);
+  
+
+         
+
+     } catch (Exception e) { 
+         e.printStackTrace();
+     }
 
      
 
@@ -82,6 +113,7 @@ public class GameBoardPanel extends JPanel {
       gameStarted = false;
       gameOver = false;
       flags = 0;
+      deathClip.setFramePosition(0);
       // Reset cells, mines, and flags
       for (int row = 0; row < ROWS; row++) {
          for (int col = 0; col < COLS; col++) {
@@ -202,8 +234,26 @@ public class GameBoardPanel extends JPanel {
       } 
   
       if (!gameOver) {
-          JOptionPane.showMessageDialog(null, "Game Over!");
-          gameOver = true;
+         //JOptionPane.showMessageDialog(null, "Game Over!");
+         JDialog dialog = new JDialog();
+         dialog.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+
+         try {
+         deathClip.start();
+         // Load the animated GIF from file
+         ImageIcon icon = new ImageIcon("/Users/irfansyakir/Documents/OOP-Minesweeper/assets/death.gif");
+         JLabel label = new JLabel(icon);
+         dialog.getContentPane().add(label, BorderLayout.CENTER);
+         dialog.setPreferredSize(new Dimension(icon.getIconWidth(), icon.getIconHeight()));
+         dialog.pack();
+         dialog.setLocationRelativeTo(null);
+         dialog.setVisible(true);
+         
+         } catch (Exception e) {
+            e.printStackTrace();
+         }
+
+         gameOver = true;
       }
   }
   
@@ -260,4 +310,7 @@ public class GameBoardPanel extends JPanel {
          }
       }
    }
+
+   
+  
 }
