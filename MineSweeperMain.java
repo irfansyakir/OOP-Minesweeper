@@ -46,7 +46,7 @@ public class MineSweeperMain extends JFrame {
 
       pack();  // Pack the UI components, instead of setSize()
       setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);  // handle window-close button
-      setTitle("Minesweeper");
+      setTitle("Impostersweeper");
       setLocationRelativeTo(null);
       setVisible(true);   // show it
    }

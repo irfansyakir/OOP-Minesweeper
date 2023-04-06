@@ -22,7 +22,7 @@ public class WelcomeScreen extends JFrame {
     
 
     public WelcomeScreen() {
-        super("Minesweeper"); // Set Title
+        super("Impostersweeper"); // Set Title
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); // Exit Program on Close
         setResizable(false);    // Make it unresizable
         setLayout(new BorderLayout(0, 0)); 
@@ -82,7 +82,7 @@ public class WelcomeScreen extends JFrame {
         // Create a welcome message panel with FlowLayout and add it to the main panel
         JPanel welcomePanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 0, 20));
         welcomePanel.setBackground(Color.BLACK);
-        JLabel welcomeLabel = new JLabel("Minesweeper");
+        JLabel welcomeLabel = new JLabel("Impostersweeper");
 
         welcomePanel.add(welcomeLabel);
         panel.add(welcomePanel, BorderLayout.NORTH);
@@ -96,7 +96,7 @@ public class WelcomeScreen extends JFrame {
         // Create a panel for the additional label with FlowLayout
         JPanel additionalLabelPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
         additionalLabelPanel.setBackground(Color.BLACK);
-        JLabel additionalLabel = new JLabel("There are mines among us.");
+        JLabel additionalLabel = new JLabel("Find the imposters among us.");
         
         additionalLabelPanel.add(additionalLabel);
         subPanel.add(additionalLabelPanel, BorderLayout.NORTH);

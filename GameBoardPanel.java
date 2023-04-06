@@ -246,6 +246,7 @@ public class GameBoardPanel extends JPanel {
          dialog.getContentPane().add(label, BorderLayout.CENTER);
          dialog.setPreferredSize(new Dimension(icon.getIconWidth(), icon.getIconHeight()));
          dialog.pack();
+         dialog.setResizable(false);
          dialog.setLocationRelativeTo(null);
          dialog.setVisible(true);
          
