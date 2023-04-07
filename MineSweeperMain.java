@@ -14,18 +14,17 @@ public class MineSweeperMain extends JFrame {
 
    // private variables
    private String playerName;
-   private String DIFICULTY;
+   private String DIFFICULTY;
 
    // components
    GameBoardPanel board;
    JButton btnNewGame = new JButton("New Game");
 
-
    // Constructor to set up all the UI and game components
    public MineSweeperMain(String playerName, String difficulty) {
       this.playerName = playerName;
-      this.DIFICULTY = difficulty;
-      board = new GameBoardPanel(this.DIFICULTY);
+      this.DIFFICULTY = difficulty;
+      board = new GameBoardPanel(this.DIFFICULTY);
       
       Container cp = this.getContentPane();           // JFrame's content-pane
       cp.setLayout(new BorderLayout()); // in 10x10 GridLayout
@@ -48,6 +47,7 @@ public class MineSweeperMain extends JFrame {
       setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);  // handle window-close button
       setTitle("Impostersweeper");
       setLocationRelativeTo(null);
+      setResizable(false);
       setVisible(true);   // show it
    }
 

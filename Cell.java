@@ -17,11 +17,17 @@ public class Cell extends JButton {
    public static final Color FG_NOT_REVEALED = Color.RED;    // flag, mines
    public static final Color BG_REVEALED = Color.BLACK;
    public static final Color FG_REVEALED = Color.YELLOW; // number of mines
+   public static final Color BG_DEAD = Color.RED;
+   public static final Color BG_IMPOSTER = Color.YELLOW;
    public static final Font FONT_NUMBERS = new Font("Monospaced", Font.BOLD, 20);
 
+
+   // Change to "./resources/X.png" in Windows
+   // Change to "/Users/irfansyakir/Documents/OOP-Minesweeper/resources/X.png" in macOS
   
-   private ImageIcon susIcon = new ImageIcon("/Users/irfansyakir/Documents/OOP-Minesweeper/assets/sus.png");
-   private ImageIcon imposterIcon = new ImageIcon("/Users/irfansyakir/Documents/OOP-Minesweeper/assets/among-us-kill.png");
+   private ImageIcon susIcon = new ImageIcon("./resources/sus.png");
+   private ImageIcon imposterIcon = new ImageIcon("./resources/imposter.png");
+   private ImageIcon deadIcon = new ImageIcon("./resources/dead.png");
 
    // Define properties (package-visible)
    /** The row and column number of the cell */
@@ -41,33 +47,25 @@ public class Cell extends JButton {
       // Set JButton's default display properties
       super.setFont(FONT_NUMBERS);
       super.setPreferredSize(new Dimension(100,100));
-      
       super.updateUI();
       super.setFocusable(false);
       
    }
 
    /** Reset this cell, ready for a new game */
-   public void newGame(boolean isMined) {
+   public void newGame() {
       this.isRevealed = false; // default
       this.isFlagged = false;  // default
-      this.isMined = isMined;  // given
+      this.isMined = false;  // default
       super.setEnabled(true);  // enable button
       super.setText("");       // display blank
       super.setIcon(null);
       paint();
    }
 
-   /** Reset this cell, ready for a new game */
+   /** Sets the Cell to be mined */
    public void startGame(boolean isMined) {
-      this.isRevealed = false; // default
-      if (!this.isFlagged)
-      this.isFlagged = false;  // default
       this.isMined = isMined;  // given
-      super.setEnabled(true);  // enable button
-      super.setText("");       // display blank
-      
-      paint();
    }
 
    /** Paint itself based on its status */
@@ -81,16 +79,27 @@ public class Cell extends JButton {
       
    }
 
-   public void sus(){
+
+   // Flags the cell
+   public void sus() {
       super.setIcon(susIcon);
    }
 
-   public void unSus(){
+   // Unflag the cell
+   public void unSus() {
       super.setIcon(null);
    }
 
-   public void imposter(){
+   // Reveal the Imposter
+   public void imposter() {
       super.setIcon(imposterIcon);
+      super.setBackground(BG_IMPOSTER);
+   }
+
+   // Dead Body
+   public void dead() {
+      super.setIcon(deadIcon);
+      super.setBackground(BG_DEAD);
    }
 
 }
