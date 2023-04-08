@@ -299,7 +299,7 @@ public class GameBoardPanel extends JPanel {
          label.setForeground(Color.white);
          label.setVerticalTextPosition(JLabel.BOTTOM);
          label.setHorizontalTextPosition(JLabel.CENTER);
-         dialog.setTitle("Time spend to complete: " +elapsedTime);
+         dialog.setTitle("Time spend to complete: " +elapsedTime + " seconds");
          dialog.getContentPane().add(label, BorderLayout.CENTER);
          dialog.setPreferredSize(new Dimension(icon.getIconWidth(), icon.getIconHeight()));
          dialog.pack();
