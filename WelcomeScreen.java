@@ -24,6 +24,7 @@ public class WelcomeScreen extends JFrame {
     private String difficulty;
     private String absolutePath;
 
+
     public WelcomeScreen() {
         super("Impostersweeper"); // Set Title
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); // Exit Program on Close
@@ -185,6 +186,7 @@ public class WelcomeScreen extends JFrame {
         mediumButton.setFont(normalFont);
         hardButton.setFont(normalFont);
 
+
         // Create the radio group and the buttons to it
         buttonGroup = new ButtonGroup();
         buttonGroup.add(easyButton);
@@ -290,11 +292,46 @@ public class WelcomeScreen extends JFrame {
             }
         });
 
+
+        // Action listener for easy difficulty button, plays sound effects on click
+        easyButton.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                uiClickClip.setFramePosition(0);
+                uiClickClip.start();
+            }
+
+        });
+
+        // Action listener for medium difficulty button, plays sound effects on click
+        mediumButton.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                uiClickClip.setFramePosition(0);
+                uiClickClip.start();
+            }
+
+        });
+
+        // Action listener for hard difficulty button, plays sound effects on click
+        hardButton.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                uiClickClip.setFramePosition(0);
+                uiClickClip.start();
+            }
+
+        });
+
         // Adds a Action Listener to the start button that will bring the user to the main activity
         startButton.addActionListener(new ActionListener() {
             // Called when the user clicks on the start button
             @Override
             public void actionPerformed(ActionEvent e) {
+                uiClickClip.setFramePosition(0);
                 uiClickClip.start();
 
                 // Makes sure that the user has entered their name and selected a difficulty option
@@ -330,6 +367,8 @@ public class WelcomeScreen extends JFrame {
         });
 
     }
+
+    
 
     // main function
     public static void main(String[] args) {
