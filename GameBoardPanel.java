@@ -80,8 +80,9 @@ public class GameBoardPanel extends JPanel {
       CANVAS_WIDTH = CELL_SIZE * COLS;
       CANVAS_HEIGHT = CELL_SIZE * ROWS;
 
-      super.setLayout(new GridLayout(ROWS, COLS, 2, 2));  // JPanel
-
+      //super.setLayout(new GridLayout(ROWS, COLS, 2, 2));  // JPanel
+      super.setLayout(new BorderLayout(2, 2));
+      JPanel boardPanel = new JPanel(new GridLayout(ROWS, COLS, 2, 2));
     
       // Allocate the 2D array of Cells, and add it into content-pane.
       for (int row = 0; row < ROWS; ++row) {
@@ -89,7 +90,20 @@ public class GameBoardPanel extends JPanel {
             cells[row][col] = new Cell(row, col);
             super.add(cells[row][col]);
          }
+      }super.add(boardPanel, BorderLayout.CENTER);
+      
+      super.setBorder(BorderFactory.createEmptyBorder(0, 0, 10, 0));
+      
+      timerLabel = new JLabel("0", SwingConstants.CENTER);// Create and start the timer
+      timerLabel.setForeground(Color.BLACK);
+      super.add(timerLabel, BorderLayout.SOUTH);
+      timer = new Timer(1000, new ActionListener() {
+      public void actionPerformed(ActionEvent e) {
+         elapsedTime++;
+         timerLabel.setText(Integer.toString(elapsedTime));
       }
+      
+   }); timer.start();
 
       // [TODO 3] Allocate a common listener as the MouseEvent listener for all the
       //  Cells (JButtons)
@@ -126,10 +140,17 @@ public class GameBoardPanel extends JPanel {
       //  under this container.
       super.setPreferredSize(new Dimension(CANVAS_WIDTH, CANVAS_HEIGHT));
    }
+   public void restartTimer() {
+      timer.stop();
+      elapsedTime = 0;
+      timerLabel.setText("0");
+      timer.start();
+   } 
 
    // Initialize and re-initialize a new game
    public void newGame() {
       // Reset the variables to the initial state
+      restartTimer();
       gameStarted = false;
       gameOver = false;
       revealMinesCheat = false;
@@ -259,7 +280,7 @@ public class GameBoardPanel extends JPanel {
          }
       }
       
-
+      timer.stop();
       winAnimationDialog();   
    }
 
@@ -278,6 +299,7 @@ public class GameBoardPanel extends JPanel {
          label.setForeground(Color.white);
          label.setVerticalTextPosition(JLabel.BOTTOM);
          label.setHorizontalTextPosition(JLabel.CENTER);
+         dialog.setTitle("Time spend to complete: " +elapsedTime);
          dialog.getContentPane().add(label, BorderLayout.CENTER);
          dialog.setPreferredSize(new Dimension(icon.getIconWidth(), icon.getIconHeight()));
          dialog.pack();
@@ -319,6 +341,7 @@ public class GameBoardPanel extends JPanel {
 
       // makes sure that this is triggered only once
       if (!gameOver) {
+          timer.stop();
          deathAnimationDialog();
          gameOver = true;
       }
