@@ -1,5 +1,5 @@
 package minesweeper;
-import java.awt.*;        // Use AWT's Layout Manager
+import java.awt.*;       
 import java.awt.event.*;
 import javax.swing.*;
 import javax.swing.border.Border;
@@ -10,8 +10,10 @@ import java.io.*;
 public class WelcomeScreen extends JFrame {
     private static final long serialVersionUID = 1L;  // to prevent serial warning
 
+    // Declare variables
     private Clip clip;
     private Clip uiHoverClip;
+    private Clip uiClickClip;
     private LineListener lineListener;
 
     private JRadioButton easyButton;
@@ -20,6 +22,7 @@ public class WelcomeScreen extends JFrame {
     private ButtonGroup buttonGroup;
 
     private String difficulty;
+    private String absolutePath;
 
     public WelcomeScreen() {
         super("Impostersweeper"); // Set Title
@@ -38,6 +41,12 @@ public class WelcomeScreen extends JFrame {
 
         setVisible(true);
 
+       
+        absolutePath = System.getProperty("user.dir");
+       
+        
+        System.out.println(absolutePath);
+
         try {
 
             /* Main Menu Theme
@@ -45,7 +54,7 @@ public class WelcomeScreen extends JFrame {
                Change to "/Users/irfansyakir/Documents/OOP-Minesweeper/resources/sounds/main_menu.wav" in macOS
              */ 
 
-            File file = new File("./resources/sounds/main_menu.wav"); 
+            File file = new File(absolutePath + "/resources/sounds/main_menu.wav"); 
             
             AudioInputStream main_menu = AudioSystem.getAudioInputStream(file);
             clip = AudioSystem.getClip();
@@ -64,16 +73,29 @@ public class WelcomeScreen extends JFrame {
             };
             clip.addLineListener(lineListener); 
 
-            /* Main Menu Theme
+            /* UI Hover Sound
                Change to "/.resources/sounds/ui_hover.wav" in Windows
                Change to "/Users/irfansyakir/Documents/OOP-Minesweeper/resources/sounds/ui_hover.wav" in macOS
              */
 
-            // UI Hover Sound
-            File uiHoverFile = new File("./resources/sounds/ui_hover.wav"); 
+
+            File uiHoverFile = new File(absolutePath + "/resources/sounds/ui_hover.wav"); 
             AudioInputStream ui_hover = AudioSystem.getAudioInputStream(uiHoverFile);
             uiHoverClip = AudioSystem.getClip();
             uiHoverClip.open(ui_hover);
+
+            /* UI Hover Sound
+               Change to "/.resources/sounds/ui_hover.wav" in Windows
+               Change to "/Users/irfansyakir/Documents/OOP-Minesweeper/resources/sounds/ui_hover.wav" in macOS
+             */
+
+
+             File uiClickFile = new File(absolutePath + "/resources/sounds/ui_click.wav"); 
+             AudioInputStream ui_click = AudioSystem.getAudioInputStream(uiClickFile);
+             uiClickClip = AudioSystem.getClip();
+             uiClickClip.open(ui_click);
+
+ 
 
         } catch (Exception e) { 
             e.printStackTrace();
@@ -92,7 +114,6 @@ public class WelcomeScreen extends JFrame {
         JPanel welcomePanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 0, 20));
         welcomePanel.setBackground(Color.BLACK);
         JLabel welcomeLabel = new JLabel("Impostersweeper");
-
         welcomePanel.add(welcomeLabel);
         panel.add(welcomePanel, BorderLayout.NORTH);
 
@@ -108,11 +129,11 @@ public class WelcomeScreen extends JFrame {
         JLabel additionalLabel = new JLabel("Find the imposters among us.");
         additionalLabelPanel.add(additionalLabel);
 
-        // tries to find the Among US font and set the welcome and additional label's font accordingly
+        // tries to find the Among Us font and set the welcome and additional label's font accordingly
         try {
             // Change to "./resources/amongus.ttf" in Windows
             // Change to "/Users/irfansyakir/Documents/OOP-Minesweeper/resources/amongus.ttf" in macOS
-            String path = "./resources/amongus.ttf"; 
+            String path = absolutePath + "/resources/amongus.ttf"; 
             // load a custom font in your project folder
            amongus = Font.createFont(Font.TRUETYPE_FONT, new File(path)).deriveFont(200f);	
            GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
@@ -148,12 +169,11 @@ public class WelcomeScreen extends JFrame {
         radioButtonPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
         radioButtonPanel.setBackground(Color.BLACK);
 
-        // Create that includes the radio button panel and the input panel
+        // Create a panel that includes the radio button panel and the input panel
         JPanel inputRadioPanel = new JPanel(new GridLayout(0, 1, 0, 5)); // Use GridLayout to stack inputPanel and radioButtonPanel
         inputRadioPanel.setBackground(Color.BLACK);
         inputRadioPanel.add(inputPanel);
         inputRadioPanel.add(radioButtonPanel);
-
 
         // Create the buttons 
         easyButton = new JRadioButton("Easy");
@@ -164,7 +184,6 @@ public class WelcomeScreen extends JFrame {
         easyButton.setFont(normalFont);
         mediumButton.setFont(normalFont);
         hardButton.setFont(normalFont);
-
 
         // Create the radio group and the buttons to it
         buttonGroup = new ButtonGroup();
@@ -178,12 +197,12 @@ public class WelcomeScreen extends JFrame {
         radioButtonPanel.add(hardButton);
 
 
-        // Create a start button panel with FlowLayout and add the start button to it
+        // Create a start button panel with FlowLayout 
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
         buttonPanel.setBackground(Color.BLACK);
 
 
-        // Create the start button and set its properties
+        // Create the start button and set its properties and add it to the start button panel
         JButton startButton = new JButton("Start");
         startButton.setFont(normalFont);
         startButton.setOpaque(false);
@@ -213,43 +232,8 @@ public class WelcomeScreen extends JFrame {
             }
         });
 
-        // Create the start button Action Listener that will bring the user to the main activity
-        startButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-
-                // Makes sure that the user has entered their name and selected a difficulty option
-                if (playerNameTextField.getText() != null 
-                && (easyButton.isSelected() || mediumButton.isSelected() || hardButton.isSelected()) ){
-
-                    String playerName = playerNameTextField.getText(); // get player name from text field
-                    System.out.println("Crewmate Name: " + playerName); // For Debugging
-                    if (easyButton.isSelected()) {
-                        difficulty = "EASY";
-                    } else if (mediumButton.isSelected()){
-                        difficulty = "MEDIUM";
-                    } else if (hardButton.isSelected()) {
-                        difficulty = "HARD";
-                    }
-
-                    System.out.println("Difficulty set to " + difficulty); // For Debugging
-
-                    // run the main program
-                    SwingUtilities.invokeLater(new Runnable() {
-                        public void run() {
-                            new MineSweeperMain(playerName, difficulty);  // run the main program
-                        }
-                    });
-                    
-                    // Stops the main menu theme and closes the Welcome Screen Window
-                    clip.removeLineListener(lineListener);
-                    clip.stop();
-                    dispose();
-
-            }
-        }
-        });
         
+        // Adds a mouse listener to the start button
         // Changes the border of the start button to green and plays a sound effect when hovering over the start button
         startButton.addMouseListener(new MouseAdapter() {
             // Called when the mouse is over the start button
@@ -278,6 +262,7 @@ public class WelcomeScreen extends JFrame {
         });
 
 
+        // Adds a mouse listener to the name text field
         // Changes the border of the text field to green and plays a sound effect when hovering over the text field
         playerNameTextField.addMouseListener(new MouseAdapter() {
             // Called when the mouse is over the text field
@@ -304,8 +289,47 @@ public class WelcomeScreen extends JFrame {
                     playerNameTextField.setBorder(border);
             }
         });
-    }
 
+        // Adds a Action Listener to the start button that will bring the user to the main activity
+        startButton.addActionListener(new ActionListener() {
+            // Called when the user clicks on the start button
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                uiClickClip.start();
+
+                // Makes sure that the user has entered their name and selected a difficulty option
+                if (playerNameTextField.getText() != null 
+                     && (easyButton.isSelected() || mediumButton.isSelected() || hardButton.isSelected()) ) {
+
+                    String playerName = playerNameTextField.getText(); // get player name from text field
+                    System.out.println("Crewmate Name: " + playerName); // For Debugging
+                    if (easyButton.isSelected()) {
+                        difficulty = "EASY";
+                    } else if (mediumButton.isSelected()){
+                        difficulty = "MEDIUM";
+                    } else if (hardButton.isSelected()) {
+                        difficulty = "HARD";
+                    }
+
+                    System.out.println("Difficulty set to " + difficulty); // For Debugging
+
+                    // run the main program
+                    SwingUtilities.invokeLater(new Runnable() {
+                        public void run() {
+                            new MineSweeperMain(playerName, difficulty);  // run the main program
+                        }
+                    });
+                    
+                    // Stops the main menu theme and closes the Welcome Screen Window
+                    clip.removeLineListener(lineListener);
+                    clip.stop();
+                    dispose();
+
+                }
+            }
+        });
+
+    }
 
     // main function
     public static void main(String[] args) {

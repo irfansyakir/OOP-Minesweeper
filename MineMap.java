@@ -14,23 +14,23 @@ public class MineMap {
       super();
    }
 
-   // Allow user to change the rows and cols
+   // randomly determine which cells have mines
    public void newMineMap(int numMines, int rows, int cols, int currentRow, int currentCol) {
+
       System.out.println("First cell: ("+ currentRow + "," + currentCol + ")\n"); // For Debugging
       this.numMines = numMines;
       int totalCells = rows * cols;
+      int mines = 0;
 
       // Finds the probability of getting each cell
       double probability = (double) numMines / totalCells;
-
-      int mines = 0;
-
+   
       // ensures that the number of mines is set correctly
       while (mines != numMines) {
          for (int row = 0; row < rows; row++) {
             if (mines == numMines) break; // break from loop if the number of mines is set correctly
             for (int col = 0; col < cols; col++) {
-                  // Makes sure that the first cell is not a mine
+                  // Makes sure that the first cell the user clicks is not a mine
                   if (mines == numMines) break; // break from loop if the number of mines is set correctly
                   if (row == currentRow && col == currentCol) {
                      isMined[row][col] = false;
@@ -45,8 +45,7 @@ public class MineMap {
                      }
                   }
             }
-         }
-         
+         } 
       }  
    }
 }

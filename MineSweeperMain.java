@@ -25,6 +25,8 @@ public class MineSweeperMain extends JFrame {
       this.playerName = playerName;
       this.DIFFICULTY = difficulty;
       board = new GameBoardPanel(this.DIFFICULTY);
+
+      btnNewGame.setForeground(Color.black);
       
       Container cp = this.getContentPane();           // JFrame's content-pane
       cp.setLayout(new BorderLayout()); // in 10x10 GridLayout
@@ -46,7 +48,7 @@ public class MineSweeperMain extends JFrame {
       pack();  // Pack the UI components, instead of setSize()
       setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);  // handle window-close button
       setTitle("Impostersweeper");
-      setLocationRelativeTo(null);
+      setLocationRelativeTo(null); // set location to the center of the screen
       setResizable(false);
       setVisible(true);   // show it
    }

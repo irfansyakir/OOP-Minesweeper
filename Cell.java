@@ -12,7 +12,7 @@ public class Cell extends JButton {
    private static final long serialVersionUID = 1L;  // to prevent serial warning
 
    // Define named constants for JButton's colors and fonts
-   //  to be chosen based on cell's state
+   // to be chosen based on cell's state
    public static final Color BG_NOT_REVEALED = Color.GRAY;
    public static final Color FG_NOT_REVEALED = Color.RED;    // flag, mines
    public static final Color BG_REVEALED = Color.BLACK;
@@ -21,13 +21,14 @@ public class Cell extends JButton {
    public static final Color BG_IMPOSTER = Color.YELLOW;
    public static final Font FONT_NUMBERS = new Font("Monospaced", Font.BOLD, 20);
 
-
+   // Icons for flags and mines
    // Change to "./resources/X.png" in Windows
    // Change to "/Users/irfansyakir/Documents/OOP-Minesweeper/resources/X.png" in macOS
+   private String absolutePath = System.getProperty("user.dir");
   
-   private ImageIcon susIcon = new ImageIcon("./resources/sus.png");
-   private ImageIcon imposterIcon = new ImageIcon("./resources/imposter.png");
-   private ImageIcon deadIcon = new ImageIcon("./resources/dead.png");
+   private ImageIcon susIcon = new ImageIcon(absolutePath + "/resources/sus.png");
+   private ImageIcon imposterIcon = new ImageIcon(absolutePath + "/resources/imposter.png");
+   private ImageIcon deadIcon = new ImageIcon(absolutePath + "/resources/dead.png");
 
    // Define properties (package-visible)
    /** The row and column number of the cell */
@@ -54,6 +55,7 @@ public class Cell extends JButton {
 
    /** Reset this cell, ready for a new game */
    public void newGame() {
+      // Reinitialize the cell to default values
       this.isRevealed = false; // default
       this.isFlagged = false;  // default
       this.isMined = false;  // default
@@ -79,15 +81,16 @@ public class Cell extends JButton {
       
    }
 
-
    // Flags the cell
    public void sus() {
       super.setIcon(susIcon);
+      super.setBackground(BG_NOT_REVEALED);
    }
 
    // Unflag the cell
    public void unSus() {
       super.setIcon(null);
+      super.setBackground(BG_NOT_REVEALED);
    }
 
    // Reveal the Imposter
@@ -96,7 +99,7 @@ public class Cell extends JButton {
       super.setBackground(BG_IMPOSTER);
    }
 
-   // Dead Body
+   // Sets a dead body 
    public void dead() {
       super.setIcon(deadIcon);
       super.setBackground(BG_DEAD);

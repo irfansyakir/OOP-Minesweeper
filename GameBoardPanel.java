@@ -20,11 +20,9 @@ import javax.swing.JLabel;
 public class GameBoardPanel extends JPanel {
    private static final long serialVersionUID = 1L;  // to prevent serial warning
 
-   
-
    // Define named constants for the game properties
    public static String DIFFICULTY;
-   public static int ROWS = 10;      // number of cells
+   public static int ROWS = 10;      
    public static int COLS = 10;
 
    // Define named constants for UI sizes
@@ -43,13 +41,19 @@ public class GameBoardPanel extends JPanel {
 
    private boolean gameStarted = false;
    private boolean gameOver = false;
+   private boolean revealMinesCheat = false;
 
    private Clip deathClip;
    private Clip winClip;
 
+   private String absolutePath; 
+
    /** Constructor */
    public GameBoardPanel(String difficulty) {
       GameBoardPanel.DIFFICULTY = difficulty;
+      
+
+      // Changes the number of cells and mines according to the difficulty
 
       if (DIFFICULTY.matches("EASY")) {
          ROWS = 9;
@@ -69,6 +73,9 @@ public class GameBoardPanel extends JPanel {
          System.out.println("Invalid difficulty"); // For Debugging
          System.exit(0);
       }
+      
+      // Creates the board size
+
       cells = new Cell[ROWS][COLS];
       CANVAS_WIDTH = CELL_SIZE * COLS;
       CANVAS_HEIGHT = CELL_SIZE * ROWS;
@@ -76,7 +83,7 @@ public class GameBoardPanel extends JPanel {
       super.setLayout(new GridLayout(ROWS, COLS, 2, 2));  // JPanel
 
     
-      // Allocate the 2D array of Cell, and added into content-pane.
+      // Allocate the 2D array of Cells, and add it into content-pane.
       for (int row = 0; row < ROWS; ++row) {
          for (int col = 0; col < COLS; ++col) {
             cells[row][col] = new Cell(row, col);
@@ -88,13 +95,14 @@ public class GameBoardPanel extends JPanel {
       //  Cells (JButtons)
       listener = new CellMouseListener();
       
-
+      absolutePath = System.getProperty("user.dir");
+      
       try {
          /* Death Sound Effect
             Change to "./resources/sounds/death.wav" in Windows
             Change to "/Users/irfansyakir/Documents/OOP-Minesweeper/resources/sounds/death.wav" in macOS
          */ 
-         File file = new File("./resources/sounds/death.wav"); // change this to the "main_menu.wav" on windows
+         File file = new File(absolutePath + "/resources/sounds/death.wav"); // change this to the "main_menu.wav" on windows
          AudioInputStream death = AudioSystem.getAudioInputStream(file);
          deathClip = AudioSystem.getClip();
          deathClip.open(death);
@@ -104,7 +112,7 @@ public class GameBoardPanel extends JPanel {
             Change to "/Users/irfansyakir/Documents/OOP-Minesweeper/resources/sounds/victory.wav" in macOS
          */ 
 
-         file = new File("./resources/sounds/victory.wav");
+         file = new File(absolutePath + "/resources/sounds/victory.wav");
          AudioInputStream win = AudioSystem.getAudioInputStream(file);
          winClip = AudioSystem.getClip();
          winClip.open(win);
@@ -114,7 +122,6 @@ public class GameBoardPanel extends JPanel {
      }
 
      
-
       // Set the size of the content-pane and pack all the components
       //  under this container.
       super.setPreferredSize(new Dimension(CANVAS_WIDTH, CANVAS_HEIGHT));
@@ -125,6 +132,7 @@ public class GameBoardPanel extends JPanel {
       // Reset the variables to the initial state
       gameStarted = false;
       gameOver = false;
+      revealMinesCheat = false;
       flags = 0;
       deathClip.setFramePosition(0);
       winClip.setFramePosition(0);
@@ -203,7 +211,7 @@ public class GameBoardPanel extends JPanel {
       if (flag) {
          // Flags the selected cell only if there are flags still available
          if (flags != numMines) {
-            // flag the selected cell
+            // flag the selected cell and set the SUS icon ;)
             System.out.println("You flagged(" + srcRow + "," + srcCol + ")"); // For Debugging
             cells[srcRow][srcCol].isFlagged = true;
             cells[srcRow][srcCol].sus();
@@ -212,7 +220,7 @@ public class GameBoardPanel extends JPanel {
       
          // do only if flagging is false
       } else {
-         // unflag the selected cell
+         // unflag the selected cell and remove the SUS icon ;)
          System.out.println("You unflagged(" + srcRow + "," + srcCol + ")"); // For Debugging
          cells[srcRow][srcCol].isFlagged = false;
          cells[srcRow][srcCol].unSus();
@@ -240,6 +248,7 @@ public class GameBoardPanel extends JPanel {
 
    }
 
+   // Triggers on Win
    public void win() {
       // Reveal remaining cells and removes the listener from each cell
       for (int row = 0; row < ROWS; ++row){
@@ -249,14 +258,21 @@ public class GameBoardPanel extends JPanel {
                revealCell(row, col);
          }
       }
+      
 
+      winAnimationDialog();   
+   }
+
+
+   // Creates a new Frame containing the Win Animation
+   private void winAnimationDialog() {
       JDialog dialog = new JDialog();
       dialog.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
       // Tries to play the death sound and open the death animation gif in a new window
       try {
          winClip.start();
-         ImageIcon icon = new ImageIcon("./resources/victory.png");
+         ImageIcon icon = new ImageIcon(absolutePath + "/resources/victory.png");
          JLabel label = new JLabel("Score: ", icon, JLabel.CENTER);
          label.setFont(Cell.FONT_NUMBERS);
          label.setForeground(Color.white);
@@ -285,8 +301,6 @@ public class GameBoardPanel extends JPanel {
          e.printStackTrace();
          JOptionPane.showMessageDialog(null, "You won!");
       }
-
-            
    }
 
    // Triggers on Loss
@@ -326,7 +340,7 @@ public class GameBoardPanel extends JPanel {
          int randomNumber = (int)(Math.random() * 5) + 1;
          // Change to "./resources/death_animations/" in Windows
          // Change to "/Users/irfansyakir/Documents/OOP-Minesweeper/resources/death_animations/" in macOS
-         String filePath = "./resources/death_animations/";
+         String filePath = absolutePath + "/resources/death_animations/";
 
          switch(randomNumber) {
             case 1:
@@ -378,13 +392,12 @@ public class GameBoardPanel extends JPanel {
   
    private class CellMouseListener extends MouseAdapter {
       
-
       @Override
       public void mousePressed(MouseEvent e) {       // Get the source object that fired the Event
          // Left-click to reveal a cell; Right-click to plant/remove the flag.
          Cell sourceCell = (Cell)e.getSource();
          
-         // Left-click 
+         // Triggers on Left-click 
          if (e.getButton() == MouseEvent.BUTTON1) {  // Left-button clicked
             // If this cell is not flagged, reveal it
             if (!sourceCell.isFlagged) {
@@ -412,7 +425,8 @@ public class GameBoardPanel extends JPanel {
                }
 
             }
-         // Right Click
+
+         // Triggers on Right Click
          } else if (e.getButton() == MouseEvent.BUTTON3) { // right-button clicked
             
             // If this cell is flagged, remove the flag
@@ -422,19 +436,33 @@ public class GameBoardPanel extends JPanel {
                   flagCell(sourceCell.row, sourceCell.col, false); // Unflag cell if the selected flag is already flag
                else  
                   flagCell(sourceCell.row, sourceCell.col, true); // Flag cell if the selected flag is not flagged
-            }    
+         }    
+
+         // Triggers on Middle Click (FOR DEBUGGING ONLY, to be removed/ activated on by cheats)
          } else if (e.getButton() == MouseEvent.BUTTON2) {
-            // Shows which cells are the imposter
-            for (int row = 0; row < ROWS; ++row) {
-               for (int col = 0; col < COLS; ++col) {
-                  if (cells[row][col].isMined) {
-                     cells[row][col].imposter();
+
+            if (!revealMinesCheat) {
+               // Shows which cells are the imposter
+               for (int row = 0; row < ROWS; ++row) {
+                  for (int col = 0; col < COLS; ++col) {
+                     if (cells[row][col].isMined && !cells[row][col].isFlagged) {
+                        cells[row][col].imposter();
+                     } 
                   }
-               }
+               } 
+               revealMinesCheat = true;
             } 
-
+            else {
+               for (int row = 0; row < ROWS; ++row) {
+                  for (int col = 0; col < COLS; ++col) {
+                     if (cells[row][col].isMined && !cells[row][col].isFlagged) {
+                        cells[row][col].unSus();
+                     } 
+                  }
+               } 
+               revealMinesCheat = false;
+            }
          }
-
       }
    }
 }
