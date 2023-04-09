@@ -10,6 +10,8 @@ import javax.sound.sampled.Clip;
 import javax.swing.ImageIcon;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
+import java.sql.Timestamp;
+
 
 
 public class GameBoardPanel extends JPanel {
@@ -24,6 +26,9 @@ public class GameBoardPanel extends JPanel {
 
    // Define named constants for the game properties
    public static String DIFFICULTY;
+   public static String PLAYERNAME;
+   private String absolutePath; 
+
    public static int ROWS = 10;      
    public static int COLS = 10;
 
@@ -48,13 +53,14 @@ public class GameBoardPanel extends JPanel {
    private Clip deathClip;
    private Clip winClip;
 
-   private String absolutePath; 
+   
 
    /** Constructor */
-   public GameBoardPanel(String difficulty) {
+   public GameBoardPanel(String name, String difficulty) {
+      GameBoardPanel.PLAYERNAME = name;
       GameBoardPanel.DIFFICULTY = difficulty;
       
-
+   
       // Changes the number of cells and mines according to the difficulty
 
       if (DIFFICULTY.matches("EASY")) {
@@ -101,31 +107,32 @@ public class GameBoardPanel extends JPanel {
 
       highScoreLabel = new JLabel("Highest Score: "+ highScore , SwingConstants.CENTER);
       highScoreLabel.setForeground(Color.BLACK);
+
       JPanel scorePanel = new JPanel(new GridLayout(2, 1));
       scorePanel.add(timerLabel);
       scorePanel.add(highScoreLabel);
       super.add(scorePanel, BorderLayout.SOUTH);
+
       timer = new Timer(1000, new ActionListener() {
          public void actionPerformed(ActionEvent e) {
             elapsedTime++;
             timerLabel.setText(Integer.toString(elapsedTime));
          }
+      }); 
+      timer.start();
 
-      }); timer.start();
-
-      // [TODO 3] Allocate a common listener as the MouseEvent listener for all the
-      //  Cells (JButtons)
+      //Allocate a common listener as the MouseEvent listener for all the Cells (JButtons)
       listener = new CellMouseListener();
       
-      
-      getFiles();
+      // Gets the .wav files from the sounds folder
+      getSoundFiles();
      
       // Set the size of the content-pane and pack all the components
       //  under this container.
       super.setPreferredSize(new Dimension(CANVAS_WIDTH, CANVAS_HEIGHT));
    }
 
-   private void getFiles() {
+   private void getSoundFiles() {
       absolutePath = System.getProperty("user.dir");
       
       try {
@@ -297,8 +304,9 @@ public class GameBoardPanel extends JPanel {
       if (elapsedTime < highScore || highScore == 0) {
          highScore = elapsedTime;
          highScoreLabel.setText("Best Time: " + highScore);
+         
       }
-   
+      writeScore();
       winAnimationDialog();   
    }
 
@@ -343,8 +351,25 @@ public class GameBoardPanel extends JPanel {
       }
    }
 
+   private void writeScore() {
+      try {
+         Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+         
+         String outputFilePath = absolutePath + "/scores/" + timestamp + " score.txt";
+         BufferedWriter writer = new BufferedWriter(new FileWriter(outputFilePath));
+         writer.write("Name: " + PLAYERNAME);
+         writer.write("\nDifficulty: " + DIFFICULTY);
+         writer.write("\nScore: " + elapsedTime);
+         
+         writer.close();
+       } catch (IOException e) {
+         e.printStackTrace();
+       }
+   
+   }
+
    // Triggers on Loss
-   public void loss(int currentRow, int currentCol) {
+   private void loss(int currentRow, int currentCol) {
 
       // Shows which cells are the imposter
       for (int row = 0; row < ROWS; ++row) {

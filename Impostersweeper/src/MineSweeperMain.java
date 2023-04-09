@@ -24,7 +24,7 @@ public class MineSweeperMain extends JFrame {
    public MineSweeperMain(String playerName, String difficulty) {
       this.playerName = playerName;
       this.DIFFICULTY = difficulty;
-      board = new GameBoardPanel(this.DIFFICULTY);
+      board = new GameBoardPanel(playerName, this.DIFFICULTY);
 
       btnNewGame.setForeground(Color.black);
       

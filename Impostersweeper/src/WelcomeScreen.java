@@ -44,7 +44,7 @@ public class WelcomeScreen extends JFrame {
         absolutePath = System.getProperty("user.dir");
        
         
-        System.out.println(absolutePath);
+        System.out.println("Absolute Path: " + absolutePath);
 
         try {
 
@@ -333,7 +333,7 @@ public class WelcomeScreen extends JFrame {
                 uiClickClip.start();
 
                 // Makes sure that the user has entered their name and selected a difficulty option
-                if (playerNameTextField.getText() != null 
+                if (!playerNameTextField.getText().isEmpty()
                      && (easyButton.isSelected() || mediumButton.isSelected() || hardButton.isSelected()) ) {
 
                     String playerName = playerNameTextField.getText(); // get player name from text field
@@ -363,10 +363,7 @@ public class WelcomeScreen extends JFrame {
                 }
             }
         });
-
     }
-
-    
 
     // main function
     public static void main(String[] args) {
