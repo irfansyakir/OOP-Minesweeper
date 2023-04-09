@@ -19,6 +19,13 @@ import javax.swing.JLabel;
 
 public class GameBoardPanel extends JPanel {
    private static final long serialVersionUID = 1L;  // to prevent serial warning
+   
+   //Define named constants for the timer and the shortest timing
+    private Timer timer;
+    private JLabel timerLabel;
+    private int elapsedTime = 0;
+    private int highScore = 0;
+    private JLabel highScoreLabel;
 
    // Define named constants for the game properties
    public static String DIFFICULTY;
@@ -94,16 +101,22 @@ public class GameBoardPanel extends JPanel {
       
       super.setBorder(BorderFactory.createEmptyBorder(0, 0, 10, 0));
       
-      timerLabel = new JLabel("0", SwingConstants.CENTER);// Create and start the timer
+      timerLabel = new JLabel("0", SwingConstants.CENTER);
       timerLabel.setForeground(Color.BLACK);
-      super.add(timerLabel, BorderLayout.SOUTH);
+
+      highScoreLabel = new JLabel("Highest Score: "+ highScore , SwingConstants.CENTER);
+      highScoreLabel.setForeground(Color.BLACK);
+      JPanel scorePanel = new JPanel(new GridLayout(2, 1));
+      scorePanel.add(timerLabel);
+      scorePanel.add(highScoreLabel);
+      super.add(scorePanel, BorderLayout.SOUTH);
       timer = new Timer(1000, new ActionListener() {
-      public void actionPerformed(ActionEvent e) {
-         elapsedTime++;
-         timerLabel.setText(Integer.toString(elapsedTime));
-      }
-      
-   }); timer.start();
+         public void actionPerformed(ActionEvent e) {
+            elapsedTime++;
+            timerLabel.setText(Integer.toString(elapsedTime));
+         }
+
+      }); timer.start();
 
       // [TODO 3] Allocate a common listener as the MouseEvent listener for all the
       //  Cells (JButtons)
@@ -281,6 +294,11 @@ public class GameBoardPanel extends JPanel {
       }
       
       timer.stop();
+      if (elapsedTime < highScore || highScore == 0) {
+         highScore = elapsedTime;
+         highScoreLabel.setText("Best Time: " + highScore);
+      }
+   
       winAnimationDialog();   
    }
 
