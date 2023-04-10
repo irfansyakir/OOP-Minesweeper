@@ -3,14 +3,15 @@ import java.awt.event.*;
 import javax.swing.*;
 import javax.swing.JFrame;
 import javax.sound.sampled.*;
-import java.awt.BorderLayout;
-import java.awt.Dimension;
+
 import java.io.*;
+
 import javax.sound.sampled.Clip;
 import javax.swing.ImageIcon;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
-import java.sql.Timestamp;
+import java.text.SimpleDateFormat;  
+
 
 
 
@@ -23,6 +24,8 @@ public class GameBoardPanel extends JPanel {
     private int elapsedTime = 0;
     private int highScore = 0;
     private JLabel highScoreLabel;
+
+    JPanel boardPanel;
 
    // Define named constants for the game properties
    public static String DIFFICULTY;
@@ -43,6 +46,7 @@ public class GameBoardPanel extends JPanel {
    /** Number of mines and flags */
    private int numMines = 0;
    private int flags = 0;
+   private int tilesClicked = 0;
 
    private CellMouseListener listener;
 
@@ -60,18 +64,39 @@ public class GameBoardPanel extends JPanel {
       GameBoardPanel.PLAYERNAME = name;
       GameBoardPanel.DIFFICULTY = difficulty;
       
+      createGameBoard(difficulty);
    
+      timer = new Timer(1000, new ActionListener() {
+         public void actionPerformed(ActionEvent e) {
+            elapsedTime++;
+            timerLabel.setText("Score: " + Integer.toString(elapsedTime));
+         }
+      }); 
+      timer.start();
+
+      //Allocate a common listener as the MouseEvent listener for all the Cells (JButtons)
+      listener = new CellMouseListener();
+      
+      // Gets the .wav files from the sounds folder
+      getSoundFiles();
+     
+      // Set the size of the content-pane and pack all the components
+      //  under this container.
+      
+   }
+
+   public void createGameBoard(String difficulty) {
       // Changes the number of cells and mines according to the difficulty
 
-      if (DIFFICULTY.matches("EASY")) {
+      if (difficulty.matches("EASY")) {
          ROWS = 9;
          COLS = 9;
          numMines = 10;
-      } else if (DIFFICULTY.matches("MEDIUM")) {
+      } else if (difficulty.matches("MEDIUM")) {
          ROWS = 16;
          COLS = 16;
          numMines = 40;
-      } else if (DIFFICULTY.matches("HARD")) {
+      } else if (difficulty.matches("HARD")) {
          // On Bigger Screens, COLS = 30 and numMines = 99, else COLS = 20 and numMines = 64/80
          ROWS = 16;
          COLS = 20;
@@ -90,7 +115,7 @@ public class GameBoardPanel extends JPanel {
 
       //super.setLayout(new GridLayout(ROWS, COLS, 2, 2));  // JPanel
       super.setLayout(new BorderLayout(2, 2));
-      JPanel boardPanel = new JPanel(new GridLayout(ROWS, COLS, 2, 2));
+      boardPanel = new JPanel(new GridLayout(ROWS, COLS, 2, 2));
       // Allocate the 2D array of Cells, and add it into content-pane.
       for (int row = 0; row < ROWS; ++row) {
          for (int col = 0; col < COLS; ++col) {
@@ -98,38 +123,26 @@ public class GameBoardPanel extends JPanel {
             boardPanel.add(cells[row][col]);
          }
       }
+
+      Font normalFont = new Font("Arial", Font.PLAIN, 25);
       
       super.add(boardPanel, BorderLayout.CENTER);
       super.setBorder(BorderFactory.createEmptyBorder(0, 0, 10, 0));
       
-      timerLabel = new JLabel("0", SwingConstants.CENTER);
-      timerLabel.setForeground(Color.BLACK);
+      timerLabel = new JLabel("Score: 0", SwingConstants.CENTER);
+      timerLabel.setFont(normalFont);
 
       highScoreLabel = new JLabel("Highest Score: "+ highScore , SwingConstants.CENTER);
-      highScoreLabel.setForeground(Color.BLACK);
+      highScoreLabel.setFont(normalFont);
 
-      JPanel scorePanel = new JPanel(new GridLayout(2, 1));
-      scorePanel.add(timerLabel);
-      scorePanel.add(highScoreLabel);
-      super.add(scorePanel, BorderLayout.SOUTH);
+      JPanel scorePanel = new JPanel(new BorderLayout());
+      scorePanel.setBackground(Color.BLACK);
+      scorePanel.add(timerLabel,BorderLayout.WEST);
+      scorePanel.add(highScoreLabel,BorderLayout.EAST);
+      super.add(scorePanel, BorderLayout.NORTH);
 
-      timer = new Timer(1000, new ActionListener() {
-         public void actionPerformed(ActionEvent e) {
-            elapsedTime++;
-            timerLabel.setText(Integer.toString(elapsedTime));
-         }
-      }); 
-      timer.start();
-
-      //Allocate a common listener as the MouseEvent listener for all the Cells (JButtons)
-      listener = new CellMouseListener();
-      
-      // Gets the .wav files from the sounds folder
-      getSoundFiles();
-     
-      // Set the size of the content-pane and pack all the components
-      //  under this container.
       super.setPreferredSize(new Dimension(CANVAS_WIDTH, CANVAS_HEIGHT));
+
    }
 
    private void getSoundFiles() {
@@ -175,6 +188,7 @@ public class GameBoardPanel extends JPanel {
       gameOver = false;
       revealMinesCheat = false;
       flags = 0;
+      tilesClicked = 0;
       deathClip.setFramePosition(0);
       winClip.setFramePosition(0);
       // Reset cells, mines, and flags
@@ -351,16 +365,19 @@ public class GameBoardPanel extends JPanel {
       }
    }
 
-   private void writeScore(String outcome) {
+  
+   private void writeScore(String result) {
       try {
-         Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+         String timestamp = new SimpleDateFormat("dd.MMMM.yyyy - HH.mm.ss").format(new java.util.Date());
          
-         String outputFilePath = absolutePath + "/scores/" + timestamp + " score.txt";
+         String outputFilePath = absolutePath + "/scores/Impostersweeper Score " + timestamp  +".txt";
          BufferedWriter writer = new BufferedWriter(new FileWriter(outputFilePath));
-         writer.write("Outcome: " + outcome);
-         writer.write("\nName: " + PLAYERNAME);
-         writer.write("\nDifficulty: " + DIFFICULTY);
+         writer.write("Name: " + PLAYERNAME);
+         writer.write("\nResult: " + result);
          writer.write("\nScore: " + elapsedTime);
+         writer.write("\nDifficulty: " + DIFFICULTY);
+         writer.write("\nTiles Clicked: " + tilesClicked);
+         writer.write("\nFlags Placed: " + flags);
          
          writer.close();
        } catch (IOException e) {
@@ -388,7 +405,7 @@ public class GameBoardPanel extends JPanel {
          timer.stop();
          deathAnimationDialog();
          gameOver = true;
-         writeScore("Lost");
+         writeScore("Loss");
 
       }
    }
@@ -465,6 +482,7 @@ public class GameBoardPanel extends JPanel {
          
          // Triggers on Left-click 
          if (e.getButton() == MouseEvent.BUTTON1) {  // Left-button clicked
+            tilesClicked++;
             // If this cell is not flagged, reveal it
             if (!sourceCell.isFlagged) {
                // Checks if the game has started
