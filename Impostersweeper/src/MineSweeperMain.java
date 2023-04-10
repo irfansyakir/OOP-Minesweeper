@@ -12,19 +12,17 @@ public class MineSweeperMain extends JFrame {
    private static final long serialVersionUID = 1L;  // to prevent serial warning
 
    // private variables
-   @SuppressWarnings("unused")
-   private String playerName;
-   private String DIFFICULTY;
+
 
    // components
    GameBoardPanel board;
    JButton btnNewGame = new JButton("New Game");
 
+
    // Constructor to set up all the UI and game components
    public MineSweeperMain(String playerName, String difficulty) {
-      this.playerName = playerName;
-      this.DIFFICULTY = difficulty;
-      board = new GameBoardPanel(playerName, this.DIFFICULTY);
+
+      board = new GameBoardPanel(playerName, difficulty);
 
       btnNewGame.setForeground(Color.black);
       

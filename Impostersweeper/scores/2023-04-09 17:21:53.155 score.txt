@@ -1,3 +1,0 @@
-Name: irfan
-Difficulty: MEDIUM
-Score: 37

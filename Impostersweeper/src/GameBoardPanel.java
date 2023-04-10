@@ -74,8 +74,8 @@ public class GameBoardPanel extends JPanel {
       } else if (DIFFICULTY.matches("HARD")) {
          // On Bigger Screens, COLS = 30 and numMines = 99, else COLS = 20 and numMines = 64/80
          ROWS = 16;
-         COLS = 30;
-         numMines = 99;
+         COLS = 20;
+         numMines = 64;
       } else {
          
          System.out.println("Invalid difficulty"); // For Debugging
@@ -306,7 +306,7 @@ public class GameBoardPanel extends JPanel {
          highScoreLabel.setText("Best Time: " + highScore);
          
       }
-      writeScore();
+      writeScore("Won");
       winAnimationDialog();   
    }
 
@@ -351,13 +351,14 @@ public class GameBoardPanel extends JPanel {
       }
    }
 
-   private void writeScore() {
+   private void writeScore(String outcome) {
       try {
          Timestamp timestamp = new Timestamp(System.currentTimeMillis());
          
          String outputFilePath = absolutePath + "/scores/" + timestamp + " score.txt";
          BufferedWriter writer = new BufferedWriter(new FileWriter(outputFilePath));
-         writer.write("Name: " + PLAYERNAME);
+         writer.write("Outcome: " + outcome);
+         writer.write("\nName: " + PLAYERNAME);
          writer.write("\nDifficulty: " + DIFFICULTY);
          writer.write("\nScore: " + elapsedTime);
          
@@ -384,9 +385,11 @@ public class GameBoardPanel extends JPanel {
 
       // makes sure that this is triggered only once
       if (!gameOver) {
-          timer.stop();
+         timer.stop();
          deathAnimationDialog();
          gameOver = true;
+         writeScore("Lost");
+
       }
    }
 
@@ -400,8 +403,6 @@ public class GameBoardPanel extends JPanel {
          deathClip.start();
          // Load the animated GIF from file
         
-         
-
          // Select a random death animation
          int randomNumber = (int)(Math.random() * 5) + 1;
          // Change to "./resources/death_animations/" in Windows
@@ -453,7 +454,6 @@ public class GameBoardPanel extends JPanel {
           e.printStackTrace();
           JOptionPane.showMessageDialog(null, "Game Over!");
        }
-
    }
   
    private class CellMouseListener extends MouseAdapter {
@@ -471,7 +471,7 @@ public class GameBoardPanel extends JPanel {
                if (gameStarted) {
                   System.out.println("You clicked on (" + sourceCell.row + "," + sourceCell.col + ")"); // For Debugging
                  
-                  // If the source cell is mined, trigger loss()
+                  // If the source cell is mined, invoke loss()
                   if (sourceCell.isMined) {
                      System.out.println("Loss"); // For Debugging
                      loss(sourceCell.row, sourceCell.col);
@@ -479,7 +479,7 @@ public class GameBoardPanel extends JPanel {
                   // else reveal the cell and check if the player has won
                   } else {
                      revealCell(sourceCell.row, sourceCell.col);
-                     // trigger win() if player has won
+                     // invoke win() if player has won
                      if (hasWon())
                         win();
                   }
