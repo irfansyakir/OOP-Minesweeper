@@ -52,7 +52,8 @@ public class GameBoardPanel extends JPanel {
 
    private boolean gameStarted = false;
    private boolean gameOver = false;
-   private boolean revealMinesCheat = false;
+   public boolean revealMinesCheat = false;
+   private boolean minesRevealed = false;
 
    private Clip deathClip;
    private Clip winClip;
@@ -187,6 +188,7 @@ public class GameBoardPanel extends JPanel {
       gameStarted = false;
       gameOver = false;
       revealMinesCheat = false;
+      minesRevealed = false;
       flags = 0;
       tilesClicked = 0;
       deathClip.setFramePosition(0);
@@ -206,6 +208,19 @@ public class GameBoardPanel extends JPanel {
             cells[row][col].addMouseListener(listener);     
          }
       }
+   }
+
+   public void activateCheats(String cheat) {
+      if (cheat.equals("REVEAL MINES")) 
+         revealMinesCheat = true;
+      triggerCheats();
+   }
+
+   public void deactivateCheats(String cheat) {
+      triggerCheats();
+      if (cheat.equals("REVEAL MINES"))
+         revealMinesCheat = false;
+         
    }
 
    // Triggers when the user clicks on a cell for the first time
@@ -280,6 +295,32 @@ public class GameBoardPanel extends JPanel {
          cells[srcRow][srcCol].isFlagged = false;
          cells[srcRow][srcCol].unSus();
          flags--;
+      }
+   }
+
+   private void triggerCheats() {
+      if (revealMinesCheat) {
+         if (!minesRevealed) {
+            // Shows which cells are the imposter
+            for (int row = 0; row < ROWS; ++row) {
+               for (int col = 0; col < COLS; ++col) {
+                  if (cells[row][col].isMined && !cells[row][col].isFlagged) {
+                     cells[row][col].imposter();
+                  } 
+               }
+            } 
+            minesRevealed = true;
+         } 
+         else {
+            for (int row = 0; row < ROWS; ++row) {
+               for (int col = 0; col < COLS; ++col) {
+                  if (cells[row][col].isMined && !cells[row][col].isFlagged) {
+                     cells[row][col].unSus();
+                  } 
+               }
+            } 
+            minesRevealed = false;
+         }
       }
    }
 
@@ -524,28 +565,7 @@ public class GameBoardPanel extends JPanel {
 
          // Triggers on Middle Click (FOR DEBUGGING ONLY, to be removed/ activated on by cheats)
          } else if (e.getButton() == MouseEvent.BUTTON2) {
-
-            if (!revealMinesCheat) {
-               // Shows which cells are the imposter
-               for (int row = 0; row < ROWS; ++row) {
-                  for (int col = 0; col < COLS; ++col) {
-                     if (cells[row][col].isMined && !cells[row][col].isFlagged) {
-                        cells[row][col].imposter();
-                     } 
-                  }
-               } 
-               revealMinesCheat = true;
-            } 
-            else {
-               for (int row = 0; row < ROWS; ++row) {
-                  for (int col = 0; col < COLS; ++col) {
-                     if (cells[row][col].isMined && !cells[row][col].isFlagged) {
-                        cells[row][col].unSus();
-                     } 
-                  }
-               } 
-               revealMinesCheat = false;
-            }
+               
          }
       }
    }
