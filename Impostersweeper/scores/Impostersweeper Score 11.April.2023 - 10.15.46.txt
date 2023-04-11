@@ -1,6 +1,0 @@
-Name: d
-Result: Loss
-Score: 1
-Difficulty: MEDIUM
-Tiles Clicked: 4
-Flags Placed: 0

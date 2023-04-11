@@ -92,7 +92,7 @@ public class GameBoardPanel extends JPanel {
       if (difficulty.matches("EASY")) {
          ROWS = 9;
          COLS = 9;
-         numMines = 10;
+         numMines = 15;
       } else if (difficulty.matches("MEDIUM")) {
          ROWS = 16;
          COLS = 16;
@@ -100,8 +100,8 @@ public class GameBoardPanel extends JPanel {
       } else if (difficulty.matches("HARD")) {
          // On Bigger Screens, COLS = 30 and numMines = 99, else COLS = 20 and numMines = 64/80
          ROWS = 16;
-         COLS = 20;
-         numMines = 64;
+         COLS = 40;
+         numMines = 99;
       } else {
          
          System.out.println("Invalid difficulty"); // For Debugging
@@ -133,7 +133,8 @@ public class GameBoardPanel extends JPanel {
       timerLabel = new JLabel("Score: 0", SwingConstants.CENTER);
       timerLabel.setFont(normalFont);
 
-      highScoreLabel = new JLabel("Highest Score: "+ highScore , SwingConstants.CENTER);
+      //"Best Time: "+ highScore 
+      highScoreLabel = new JLabel("", SwingConstants.CENTER);
       highScoreLabel.setFont(normalFont);
 
       JPanel scorePanel = new JPanel(new BorderLayout());
@@ -177,7 +178,7 @@ public class GameBoardPanel extends JPanel {
    public void restartTimer() {
       timer.stop();
       elapsedTime = 0;
-      timerLabel.setText("0");
+      timerLabel.setText("Score: 0");
       timer.start();
    } 
 
@@ -267,7 +268,8 @@ public class GameBoardPanel extends JPanel {
             for (int col = srcCol - 1; col <= srcCol + 1; col++) {
             // Need to ensure valid row and column numbers too
             if (row >= 0 && row < ROWS && col >= 0 && col < COLS) {
-               if (!cells[row][col].isRevealed && !cells[row][col].isFlagged) revealCell(row, col);
+               if (!cells[row][col].isRevealed && !cells[row][col].isFlagged) 
+                  revealCell(row, col);
                }
             }
          }
@@ -455,6 +457,7 @@ public class GameBoardPanel extends JPanel {
        // Create a new dialog for the death animation
        JDialog dialog = new JDialog();
        dialog.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+       dialog.setTitle("Game Over!");
 
        // Tries to play the death sound and open the death animation gif in a new window
        try {

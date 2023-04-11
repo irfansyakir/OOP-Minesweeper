@@ -30,7 +30,8 @@ public class MineMap {
             for (int col = 0; col < cols; col++) {
                   // Makes sure that the first cell the user clicks is not a mine
                   if (mines == numMines) break; // break from loop if the number of mines is set correctly
-                  if (row == currentRow && col == currentCol) {
+                  // ensures that the first cell the user clicks and the surrounding cells are not mined
+                  if (Math.abs(row - currentRow) <= 1 && Math.abs(col - currentCol) <= 1) {
                      isMined[row][col] = false;
                   } else {
                      // If the random number is lower than the probability, set the cell as a mine

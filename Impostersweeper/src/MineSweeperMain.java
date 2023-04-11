@@ -22,7 +22,7 @@ public class MineSweeperMain extends JFrame{
    JMenu gameMenu = new JMenu("Game");
    JMenuItem newGame = new JMenuItem("New Game");
    JMenuItem resetGame = new JMenuItem("Reset Game");
-   JMenuItem exit = new JMenuItem("Exit");
+   JMenuItem exit = new JMenuItem("Exit Game");
 
    JMenu options = new JMenu("Options");
    JMenu difficultySubMenu = new JMenu("Change Difficulty");
@@ -56,6 +56,9 @@ public class MineSweeperMain extends JFrame{
       menuBar.add(options);
       menuBar.add(help);
 
+      //menuBar.setBackground(Color.black);
+      
+
       gameMenu.add(newGame);
       gameMenu.add(resetGame);
       gameMenu.add(exit);
@@ -76,6 +79,8 @@ public class MineSweeperMain extends JFrame{
       medium.addActionListener(actionListener);
       hard.addActionListener(actionListener);
       revealMines.addActionListener(actionListener);
+      
+      addKeyListener(keyListener);
 
       setJMenuBar(menuBar);
       
@@ -90,57 +95,93 @@ public class MineSweeperMain extends JFrame{
       setTitle("Impostersweeper");
       setLocationRelativeTo(null); // set location to the center of the screen
       setVisible(true);   // show it
+      requestFocus();
    }
 
-
+   // action listeners for the menu items
    private ActionListener actionListener = new ActionListener() {
       @Override
       public void actionPerformed(ActionEvent e) {
 
          if (e.getSource() == newGame) {
+            System.out.println("New Game Button clicked"); // for debugging
             new WelcomeScreen();
             dispose();
          } 
          
          if (e.getSource() == resetGame) {
+            System.out.println("Reset Game Button clicked"); // for debugging
             board.newGame();
          }
          
          if (e.getSource() == exit) {
+            System.out.println("Exit Game Button clicked"); // for debugging
             System.exit(0);
          }
 
          if (e.getSource() == easy) {
+            System.out.println("Easy Button clicked, changing difficulty to easy"); // for debugging
             new MineSweeperMain(playerName, "EASY");
             dispose();
          } 
          
          if (e.getSource() == medium) {
+            System.out.println("Medium Button clicked, changing difficulty to medium"); // for debugging
             new MineSweeperMain(playerName, "MEDIUM");
             dispose();
          } 
          
          if (e.getSource() == hard) {
-            new MineSweeperMain(playerName, "HARD");
-            dispose();
-         }
-
-         if (e.getSource() == hard) {
+            System.out.println("hard Button clicked, changing difficulty to hard"); // for debugging
             new MineSweeperMain(playerName, "HARD");
             dispose();
          }
 
          if (e.getSource() == revealMines) {
             if (!board.revealMinesCheat) {
-               System.out.println("RevealMines Cheat Activated");
+               System.out.println("RevealMines cheat activated"); // for debugging
                board.activateCheats("REVEAL MINES");
             }
             else {
-               System.out.println("RevealMines Cheat Deactivated");
+               System.out.println("RevealMines cheat deactivated"); // for debugging
                board.deactivateCheats("REVEAL MINES");
             }
          }
 
+      }
+   };
+
+   // keyboard listeners for various keyboard shortcuts
+   KeyListener keyListener = new KeyAdapter() {
+      public void keyPressed(KeyEvent e) {
+         // CTRL + R / CMD + R resets the game
+         if ((e.isControlDown() || e.isMetaDown()) && e.getKeyCode() == KeyEvent.VK_R) {
+            board.newGame();
+         }
+         // CTRL + N / CMD + N starts a new game
+         if ((e.isControlDown() || e.isMetaDown()) && e.getKeyCode() == KeyEvent.VK_N) {
+            new WelcomeScreen();
+            dispose();
+         }
+         // CTRL + E / CMD + E exits the game
+         if ((e.isControlDown() || e.isMetaDown()) && e.getKeyCode() == KeyEvent.VK_E) {
+            System.exit(0);
+         }
+         // ALT + E changes the difficulty to easy
+         if (e.isAltDown() && e.getKeyCode() == KeyEvent.VK_E) {
+            new MineSweeperMain(playerName, "EASY");
+            dispose();
+         }
+         // ALT + M changes the difficulty to medium
+         if (e.isAltDown() && e.getKeyCode() == KeyEvent.VK_M) {
+            new MineSweeperMain(playerName, "MEDIUM");
+            dispose();
+         }
+         // ALT + H changes the difficulty to hard
+         if (e.isAltDown() && e.getKeyCode() == KeyEvent.VK_H) {
+            new MineSweeperMain(playerName, "HARD");
+            dispose();
+         }
       }
    };
 
