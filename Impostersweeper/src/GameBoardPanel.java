@@ -155,7 +155,7 @@ public class GameBoardPanel extends JPanel {
             Change to "./resources/sounds/death.wav" in Windows
             Change to "/Users/irfansyakir/Documents/OOP-Minesweeper/resources/sounds/death.wav" in macOS
          */ 
-         File file = new File(absolutePath + "/resources/sounds/death.wav"); // change this to the "main_menu.wav" on windows
+         File file = new File(absolutePath + "/Impostersweeper/resources/sounds/death.wav"); // change this to the "main_menu.wav" on windows
          AudioInputStream death = AudioSystem.getAudioInputStream(file);
          deathClip = AudioSystem.getClip();
          deathClip.open(death);
@@ -165,7 +165,7 @@ public class GameBoardPanel extends JPanel {
             Change to "/Users/irfansyakir/Documents/OOP-Minesweeper/resources/sounds/victory.wav" in macOS
          */ 
 
-         file = new File(absolutePath + "/resources/sounds/victory.wav");
+         file = new File(absolutePath + "/Impostersweeper/resources/sounds/victory.wav");
          AudioInputStream win = AudioSystem.getAudioInputStream(file);
          winClip = AudioSystem.getClip();
          winClip.open(win);
@@ -376,7 +376,7 @@ public class GameBoardPanel extends JPanel {
       // Tries to play the death sound and open the death animation gif in a new window
       try {
          winClip.start();
-         ImageIcon icon = new ImageIcon(absolutePath + "/resources/images/victory.png");
+         ImageIcon icon = new ImageIcon(absolutePath + "/Impostersweeper/resources/images/victory.png");
          JLabel label = new JLabel("Score: ", icon, JLabel.CENTER);
          label.setFont(Cell.FONT_NUMBERS);
          label.setForeground(Color.white);
@@ -413,7 +413,7 @@ public class GameBoardPanel extends JPanel {
       try {
          String timestamp = new SimpleDateFormat("dd.MMMM.yyyy - HH.mm.ss").format(new java.util.Date());
          
-         String outputFilePath = absolutePath + "/scores/Impostersweeper Score " + timestamp  +".txt";
+         String outputFilePath = absolutePath + "/Impostersweeper/scores/Impostersweeper Score " + timestamp  +".txt";
          BufferedWriter writer = new BufferedWriter(new FileWriter(outputFilePath));
          writer.write("Name: " + PLAYERNAME);
          writer.write("\nResult: " + result);
@@ -468,7 +468,7 @@ public class GameBoardPanel extends JPanel {
          int randomNumber = (int)(Math.random() * 5) + 1;
          // Change to "./resources/death_animations/" in Windows
          // Change to "/Users/irfansyakir/Documents/OOP-Minesweeper/resources/death_animations/" in macOS
-         String filePath = absolutePath + "/resources/death_animations/";
+         String filePath = absolutePath + "/Impostersweeper/resources/death_animations/";
 
          switch(randomNumber) {
             case 1:

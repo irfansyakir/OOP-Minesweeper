@@ -12,6 +12,8 @@ public class MineMap {
       super();
    }
 
+   
+
    // randomly determine which cells have mines
    public void newMineMap(int numMines, int rows, int cols, int currentRow, int currentCol) {
 

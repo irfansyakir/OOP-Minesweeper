@@ -25,9 +25,9 @@ public class Cell extends JButton {
    // Change to "/Users/irfansyakir/Documents/OOP-Minesweeper/resources/X.png" in macOS
    private String absolutePath = System.getProperty("user.dir");
   
-   private ImageIcon susIcon = new ImageIcon(absolutePath + "/resources/icons/sus.png");
-   private ImageIcon imposterIcon = new ImageIcon(absolutePath + "/resources/icons/imposter.png");
-   private ImageIcon deadIcon = new ImageIcon(absolutePath + "/resources/icons/dead.png");
+   private ImageIcon susIcon = new ImageIcon(absolutePath + "/Impostersweeper/resources/icons/sus.png");
+   private ImageIcon imposterIcon = new ImageIcon(absolutePath + "/Impostersweeper/resources/icons/imposter.png");
+   private ImageIcon deadIcon = new ImageIcon(absolutePath + "/Impostersweeper/resources/icons/dead.png");
 
    // Define properties (package-visible)
    /** The row and column number of the cell */

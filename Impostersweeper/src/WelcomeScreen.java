@@ -53,7 +53,7 @@ public class WelcomeScreen extends JFrame {
                Change to "/Users/irfansyakir/Documents/OOP-Minesweeper/resources/sounds/main_menu.wav" in macOS
              */ 
 
-            File file = new File(absolutePath + "/resources/sounds/main_menu.wav"); 
+            File file = new File(absolutePath + "/Impostersweeper/resources/sounds/main_menu.wav"); 
             
             AudioInputStream main_menu = AudioSystem.getAudioInputStream(file);
             clip = AudioSystem.getClip();
@@ -78,7 +78,7 @@ public class WelcomeScreen extends JFrame {
              */
 
 
-            File uiHoverFile = new File(absolutePath + "/resources/sounds/ui_hover.wav"); 
+            File uiHoverFile = new File(absolutePath + "/Impostersweeper/resources/sounds/ui_hover.wav"); 
             AudioInputStream ui_hover = AudioSystem.getAudioInputStream(uiHoverFile);
             uiHoverClip = AudioSystem.getClip();
             uiHoverClip.open(ui_hover);
@@ -89,7 +89,7 @@ public class WelcomeScreen extends JFrame {
              */
 
 
-             File uiClickFile = new File(absolutePath + "/resources/sounds/ui_click.wav"); 
+             File uiClickFile = new File(absolutePath + "/Impostersweeper/resources/sounds/ui_click.wav"); 
              AudioInputStream ui_click = AudioSystem.getAudioInputStream(uiClickFile);
              uiClickClip = AudioSystem.getClip();
              uiClickClip.open(ui_click);
@@ -132,7 +132,7 @@ public class WelcomeScreen extends JFrame {
         try {
             // Change to "./resources/amongus.ttf" in Windows
             // Change to "/Users/irfansyakir/Documents/OOP-Minesweeper/resources/amongus.ttf" in macOS
-            String path = absolutePath + "/resources/amongus.ttf"; 
+            String path = absolutePath + "/Impostersweeper/resources/amongus.ttf"; 
             // load a custom font in your project folder
            amongus = Font.createFont(Font.TRUETYPE_FONT, new File(path)).deriveFont(200f);	
            GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
