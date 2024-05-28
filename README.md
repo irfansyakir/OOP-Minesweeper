@@ -6,6 +6,7 @@ This project is a Minesweeper game built in Java using OOP (Object Oriented Prog
 
 Please ensure that you have the latest Java Version installed in your system.
 Download both the ImposterSweeper.Jar file and the source code, and place the .jar file into the root folder (OOP-Minesweeper-ImpostersSweeper)
+
 To run the game, simply run the ImposterSweeper.jar file.
 
 ## Contributing 
