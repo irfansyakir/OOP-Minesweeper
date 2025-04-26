@@ -1,16 +1,23 @@
-# ImposterSweeper: A Among Us themed Minesweeper Game
+# ImposterSweeper: An Among Us-Themed Minesweeper Game
 
-This project is a Minesweeper game built in Java using OOP (Object Oriented Programming) and default Java Libraries. 
+ImposterSweeper is a Minesweeper game built entirely in Java using Object-Oriented Programming (OOP) principles and default Java libraries. The game features a fun and engaging theme inspired by the popular online game "Among Us," incorporating its unique UI elements.
 
-The game is designed with themes from the popular online game "Among Us", where UI elements are heavily inspired by the game.
+## Features
+- Classic Minesweeper gameplay with an "Among Us" twist.
+- Developed using Java and OOP principles for maintainability and scalability.
+- Simple and easy-to-use interface.
 
-## Usage
+## Requirements
+- Ensure you have the latest version of Java installed on your system.
 
-Please ensure that you have the latest Java Version installed in your system.
-Download both the ImposterSweeper.Jar file and the source code, and place the .jar file into the root folder (OOP-Minesweeper-ImpostersSweeper)
+## How to Play
+1. Download the `ImposterSweeper.jar` file and the source code.
+2. Place the `.jar` file into the root folder of the project (`OOP-Minesweeper/ImposterSweeper`).
+3. Run the game by executing the `ImposterSweeper.jar` file.
 
-To run the game, simply run the ImposterSweeper.jar file.
+## Contributing
+Contributions are always welcome! If you encounter any issues or have ideas for improvements, feel free to open an issue or submit a pull request.
 
-## Contributing 
+---
 
-Contributions are welcome! Feel free to open issues or submit pull requests.
+Enjoy the game and happy sweeping!
